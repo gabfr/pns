@@ -41,6 +41,14 @@ class RouteServiceProvider extends ServiceProvider
             }
             return null;
         });
+
+        $router->bind('device', function($idOrSlug, $route) {
+            $application = $route->parameter('application');
+            if ($application) {
+                return $application->devices()->where('id', $idOrSlug)->first();
+            }
+            return null;
+        });
     }
 
     /**

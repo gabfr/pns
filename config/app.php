@@ -159,10 +159,9 @@ return [
         Cviebrock\EloquentSluggable\SluggableServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
-        EduardoStuart\FeedReader\FeedReaderServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-        SantiGraviano\LaravelMercadoPago\Providers\MercadoPagoServiceProvider::class,
+        Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider::class,
 
     ],
 
@@ -211,9 +210,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
-        'FeedReader' => EduardoStuart\FeedReader\Facades\FeedReaderFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'MP' => SantiGraviano\LaravelMercadoPago\Facades\MP::class,
+        'PushNotification' => Davibennun\LaravelPushNotification\Facades\PushNotification::class,
     ],
 
 ];

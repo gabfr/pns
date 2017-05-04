@@ -18,7 +18,7 @@ class CreateNotificationDeliveriesTable extends Migration
             $table->integer('notification_id')->unsigned()->index()->nullable();
 
             $table->string('status')->index();
-            $table->text('status_message');
+            $table->text('status_message')->nullable();
 
             $table->timestamps();
 

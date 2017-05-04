@@ -76,9 +76,14 @@ class ApplicationRepository implements ApplicationRepositoryContract
 
     private function getPath($filename = null)
     {
+        return self::getPath($filename);
+    }
+
+    public static function getPath($filename = null) 
+    {
         $filename = !is_null($filename) ? "/" . ltrim($filename, '/') : '';
 
-        return storage_path(self::TARGET_PATH . $filename);
+        return storage_path(ApplicationRepository::TARGET_PATH . $filename);
     }
 
     private function checkPath()

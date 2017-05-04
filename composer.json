@@ -15,7 +15,7 @@
             "reference":"f7e09cb070d0889a8ad9e08aaa02ff474a0ecb96"
         },
         {
-            "url":"https://github.com/gabfr/laravel-mercadopago.git",
+            "url":"https://github.com/gabfr/laravel-push-notification.git",
             "type":"git"
         }
     ],
@@ -25,16 +25,10 @@
         "dingo/api": "dev-master",
         "tymon/jwt-auth": "^0.5.9",
         "cviebrock/eloquent-sluggable": "^3.1",
-        "simplepie/simplepie": "^1.4",
-        "eduardostuart/feedreader":"dev-master",
         "barryvdh/laravel-cors": "^0.8.0",
-        "symfony/dom-crawler": "^3.1",
-        "rmccue/requests": "^1.6",
-        "symfony/css-selector": "^3.1",
-        "predis/predis": "^1.1",
         "laravel/socialite": "^2.0",
-        "gabfr/laravel-mercadopago": "dev-master",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "davibennun/laravel-push-notification": "dev-laravel5"
     },
     "require-dev":{
         "fzaninotto/faker": "~1.4",

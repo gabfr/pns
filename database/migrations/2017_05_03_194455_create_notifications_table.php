@@ -20,6 +20,7 @@ class CreateNotificationsTable extends Migration
             $table->string('title');
             $table->text('alert_message');
             $table->string('icon');
+            $table->string('url');
 
             $table->timestamps();
 

@@ -13,6 +13,5 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(DumpSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(FeeSeed::class);
     }
 }

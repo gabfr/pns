@@ -71,7 +71,7 @@ class NotificationController extends ApiBaseController
 
     public function deliveries(Application $application, Notification $notification, Request $request)
     {
-        return $this->response->collection($notification->deliveries()->get(), $this->getBasicTransformer());
+        return $this->response->collection($notification->notification_deliveries()->get(), $this->getBasicTransformer());
     }
 
 }

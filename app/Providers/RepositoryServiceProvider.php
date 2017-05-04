@@ -9,7 +9,10 @@ class RepositoryServiceProvider extends ServiceProvider
 
     protected $binders = [
         'UserRepositoryContract' => 'UserRepository',
-        'CityRepositoryContract' => 'CityRepository'
+        'CityRepositoryContract' => 'CityRepository',
+        'ApplicationRepositoryContract' => 'ApplicationRepository',
+        'DeviceRepositoryContract' => 'DeviceRepository',
+        'NotificationRepositoryContract' => 'NotificationRepository'
     ];
 
     /**

@@ -13,25 +13,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        /*$user = User::firstOrCreate([
-            'name'     => 'Eduardo Stuart',
-            'email'    => 'stuart.eduardo@gmail.com',
-            'is_active'=> true
-        ]);
-
-        $user->update([
-            'password' => bcrypt('a')
-        ]);
-
-
         $user = User::firstOrCreate([
-            'name'     => 'Gabriel Ferreira Rosalino',
-            'email'    => 'eu@gabrielf.com',
-            'is_active'=> true
+            'name' => 'Gabriel Ferreira Rosalino',
+            'email' => 'eu@gabrielf.com',
+            'is_active' => true
         ]);
 
-        $user->update([
-            'password' => bcrypt('secret')
-        ]);*/
+        $user->update(['password' => bcrypt('secret')]);
     }
 }
