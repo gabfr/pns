@@ -1,0 +1,10 @@
+/vendor
+/node_modules
+/public/storage/cache/feed*
+/public/storage
+Homestead.yaml
+Homestead.json
+.env
+/*.sql
+/*.gz
+.DS_Store
