@@ -8,9 +8,9 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Requests\Users\CreateUserRequest;
 
-use App\Http\Requests\Application\CreateNotificationRequest;
-use App\Http\Requests\Application\DeleteNotificationRequest;
-use App\Http\Requests\Application\UpdateNotificationRequest;
+use App\Http\Requests\Notification\CreateNotificationRequest;
+use App\Http\Requests\Notification\DeleteNotificationRequest;
+use App\Http\Requests\Notification\UpdateNotificationRequest;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Repositories\Contracts\NotificationRepositoryContract;
@@ -46,7 +46,7 @@ class NotificationController extends ApiBaseController
 
     public function create(Application $application, CreateNotificationRequest $request)
     {
-        $data = $request->only('title', 'alert_message', 'icon');
+        $data = $request->only('title', 'alert_message', 'icon', 'url');
 
         $notification = $this->notificationRepo->create($application, $request->user(), $data);
 
@@ -55,7 +55,7 @@ class NotificationController extends ApiBaseController
 
     public function update(Application $application, Notification $notification, UpdateNotificationRequest $request)
     {
-        $data = $request->only('title', 'alert_message', 'icon');
+        $data = $request->only('title', 'alert_message', 'icon', 'url');
 
         $notification = $this->notificationRepo->update($notification, $data);
 
@@ -72,6 +72,20 @@ class NotificationController extends ApiBaseController
     public function deliveries(Application $application, Notification $notification, Request $request)
     {
         return $this->response->collection($notification->notification_deliveries()->get(), $this->getBasicTransformer());
+    }
+
+    public function send(Application $application, Notification $notification, Request $request)
+    {
+        $schedule = new \App\Jobs\ScheduleNotification($notification);
+
+        if (!is_null($delay = $request->get('delay', null))) {
+            \Log::info('setting delay');
+            $schedule->delay($delay);
+        }
+
+        dispatch($schedule);
+
+        return $this->response->noContent();
     }
 
 }

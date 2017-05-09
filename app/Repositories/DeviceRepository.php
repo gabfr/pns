@@ -21,10 +21,15 @@ class DeviceRepository implements DeviceRepositoryContract
             return !is_null($item);
         });
         $data['application_id'] = $application->getKey();
+        
+        $device = Device::where('application_id', $application->getKey())->where('device_token', $data['device_token'])->first();
+        if ($device) {
+            $device->update(['status' => true]);
+        } else {
+            $device = Device::create($data);
+        }
 
-        $notification = Device::create($data);
-
-        return $this->findById($notification);
+        return $this->findById($device);
     }
 
     public function update(Device $device, array $data = array())

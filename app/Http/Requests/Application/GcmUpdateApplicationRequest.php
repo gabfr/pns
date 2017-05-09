@@ -25,6 +25,7 @@ class GcmUpdateApplicationRequest extends ApiBaseRequest
     public function rules()
     {
         return [
+            'gcm_mode' => 'required|in:sandbox,production',
         	'gcm_api_key' => 'required'
         ];
     }

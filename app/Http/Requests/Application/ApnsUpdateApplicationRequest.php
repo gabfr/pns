@@ -28,7 +28,8 @@ class ApnsUpdateApplicationRequest extends ApiBaseRequest
         	'apns_certificate_password' => 'sometimes',
         	'apns_certificate_sandbox' => 'sometimes|file',
         	'apns_certificate_production' => 'sometimes|file',
-        	'apns_root_certificate' => 'sometimes|file'
+        	'apns_root_certificate' => 'sometimes|file',
+            'apns_mode' => 'sometimes|in:sandbox,production'
         ];
     }
 }

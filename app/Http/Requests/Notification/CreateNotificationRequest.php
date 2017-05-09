@@ -27,7 +27,8 @@ class CreateNotificationRequest extends ApiBaseRequest
         return [
             'title'     => 'required',
             'alert_message'    => 'required',
-            'icon' => 'sometimes'
+            'icon' => 'required',
+            'url' => 'required'
         ];
     }
 }

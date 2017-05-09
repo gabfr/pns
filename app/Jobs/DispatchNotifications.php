@@ -20,6 +20,7 @@ class DispatchNotifications extends Job implements ShouldQueue
 
     private $platform;
     private $application;
+    private $notification;
     private $notificationDeliveries;
 
     /**
@@ -42,6 +43,8 @@ class DispatchNotifications extends Job implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('DispatchNotifications::handle()');
+
         if ($this->notificationDeliveries == null || !is_array($this->notificationDeliveries)) {
             Log::error('Não é possível disparar notificação. ', [$this->notificationDeliveries]);
             return;
@@ -50,52 +53,88 @@ class DispatchNotifications extends Job implements ShouldQueue
         $pns = null;
         $message = null;
         if ($this->platform == 'android') {
-            $pns = PushNotification::app([
-                'environment' => $this->application->gcm_mode,
-                'apiKey' => $this->application->gcm_api_key,
-                'service' => 'gcm'
+            $pns = PushNotification::setService('fcm')->setConfig([
+                'priority' => 'normal',
+                'dry_run' => ($this->application->gcm_mode == "sandbox" ? true : false),
+                'apiKey' => $this->application->gcm_api_key
             ]);
-            $message = PushNotification::Message($this->notification->title, [
-                'alert' => $this->notification->alert_message,
-                'title' => $this->notification->title,
-                'icon' => $this->notification->icon,
-                'url' => $this->notification->url
-            ]);
+            $message = [
+                'notification' => [
+                    'title' => $this->notification->title,
+                    'body' => $this->notification->alert_message,
+                    'sound' => 'default'
+                ],
+                'data' => [
+                    'url' => $this->notification->url
+                ]
+            ];
         } else {
-            $pns = PushNotification::app([
-                'environment' => $this->application->apns_mode,
+            $configPayload = [
                 'certificate' => ($this->application->apns_mode == "production" ? 
-                    ApplicationRepository::getPath($this->application->apns_certificate_production) : 
-                    ApplicationRepository::getPath($this->application->apns_certificate_sandbox)),
-                'passPhrase' => $this->application->apns_certificate_password,
-                'service' => 'apns'
-            ]);
-            $message = PushNotification::Message($this->notification->title, [
+                    ApplicationRepository::getCertificatePath($this->application->apns_certificate_production) : 
+                    ApplicationRepository::getCertificatePath($this->application->apns_certificate_sandbox)),
+                'dry_run' => ($this->application->apns_mode == "sandbox" ? true : false)
+            ];
+            if (!is_null($this->application->apns_certificate_password)) {
+                $configPayload['passPhrase'] = $this->application->apns_certificate_password;
+            }
+            $pns = PushNotification::setService('apn')->setConfig($configPayload);
+            $message = [
                 'aps' => [
                     'alert' => [
                         'body' => $this->notification->alert_message,
                         'title' => $this->notification->title
                     ],
-                    'badge' => 1,
-                    'sound' => "sound.caf"
+                    'sound' => "default"
                 ],
-                'url' => $this->notification->url
-            ]);
+                'extraPayload' => [
+                    'url' => $this->notification->url
+                ]
+            ];
         }
-        $pns->adapter->setAdapterParameters(['sslverifypeer' => false]);
 
+        $pns->setMessage($message);
+
+        $deliveriesIds = [];
         $devices = [];
         foreach ($this->notificationDeliveries as $notificationDelivery) {
+            $deliveriesIds[] = $notificationDelivery->getKey();
             $device = $notificationDelivery->device()->first();
-            $devices[] = PushNotification::Device($device->device_token);
+            $devices[] = $device->device_token;
         }
 
-        $collection = $pns->to(PushNotification::DeviceCollection($devices))->send($message);
-        $responses = [];
-        foreach ($collection as $push) {
-            $responses[] = $push->getAdapter()->getResponse();
+        $pns->setDevicesToken($devices);
+
+        $responses = null;
+
+        try {
+            $responses = $pns->send()->getFeedback();
+        } catch(Exception $e) {
+            Log::error('Error trying to connect to send notifications: ' . print_r($e, true));
         }
         
         Log::info('Respostas dos enviados: ' . print_r($responses, true));
+
+        $allDeliveries = NotificationDelivery::whereIn('id', $deliveriesIds)->get();
+        foreach ($allDeliveries as $delivery)
+            $delivery->update(['status' => NotificationDelivery::ENVIADO]);
+
+        if ($responses->failure > 0) {
+            foreach ($responses->tokenFailList as $deviceToken) {
+                $device = Device::where('application_id', $this->notification->application_id)
+                    ->where('device_token', $deviceToken)
+                    ->first();
+                $notificationDelivery = NotificationDelivery::whereIn('id', $deliveriesIds)
+                    ->where('notification_id', $this->notification->getKey())
+                    ->where('device_id', $device->getKey())
+                    ->first();
+                if ($notificationDelivery) {
+                    $notificationDelivery->update(['status' => NotificationDelivery::ERRO]);
+                }
+                if ($device) {
+                    $device->update(['status' => false]);
+                }
+            }
+        }
     }
 }

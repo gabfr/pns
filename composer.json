@@ -15,7 +15,7 @@
             "reference":"f7e09cb070d0889a8ad9e08aaa02ff474a0ecb96"
         },
         {
-            "url":"https://github.com/gabfr/laravel-push-notification.git",
+            "url":"https://github.com/gabfr/PushNotification.git",
             "type":"git"
         }
     ],
@@ -28,7 +28,7 @@
         "barryvdh/laravel-cors": "^0.8.0",
         "laravel/socialite": "^2.0",
         "doctrine/dbal": "^2.5",
-        "davibennun/laravel-push-notification": "dev-laravel5"
+        "edujugon/push-notification": "^2.1"
     },
     "require-dev":{
         "fzaninotto/faker": "~1.4",

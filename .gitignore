@@ -2,6 +2,7 @@
 /node_modules
 /public/storage/cache/feed*
 /public/storage
+/storage/certificates
 Homestead.yaml
 Homestead.json
 .env

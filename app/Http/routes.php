@@ -25,40 +25,55 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
     $api->get('cities', ['as' => 'cities.all', 'uses' => 'CitiesController@all']);
     $api->post('cities/zipcodes', ['as' => 'cities.zipcodes', 'uses' => 'CitiesController@zipcode']);
 
+    $api->post('applications/{application}/devices', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
+
     $api->group(['middleware'=>'api.auth'],function($api){
         $api->get('/me',['as'=>'users.me','uses'=>'UserController@me']);
 
         $api->group(['prefix'=>'applications'], function($api) {
             $api->get('/', ['as' => 'applications.index', 'uses' => 'ApplicationController@index']);
-            $api->get('{application}', ['as' => 'applications.show', 'uses' => 'ApplicationController@show']);
             $api->post('/', ['as' => 'applications.create', 'uses' => 'ApplicationController@create']);
-            $api->put('{application}', ['as' => 'applications.update', 'uses' => 'ApplicationController@update']);
-            $api->delete('{application}', ['as' => 'applications.delete', 'uses' => 'ApplicationController@delete']);
+
             $api->group(['prefix' => '{application}'], function($api) {
+                $api->get('/', ['as' => 'applications.show', 'uses' => 'ApplicationController@show']);
+                $api->put('/', ['as' => 'applications.update', 'uses' => 'ApplicationController@update']);
+                $api->delete('/', ['as' => 'applications.delete', 'uses' => 'ApplicationController@delete']);
+
                 $api->post('apns', ['as' => 'applications.update_apns', 'uses' => 'ApplicationController@updateApns']);
                 $api->post('gcm', ['as' => 'applications.update_gcm', 'uses' => 'ApplicationController@updateGcm']);
+
                 $api->group(['prefix' => 'notifications'], function($api) {
                     $api->get('/', ['as' => 'notifications.index', 'uses' => 'NotificationController@index']);
                     $api->post('/', ['as' => 'notifications.create', 'uses' => 'NotificationController@create']);
+
                     $api->group(['prefix' => '{notification}'], function($api) {
-                        $api->get('{notification}', ['as' => 'notifications.show', 'uses' => 'NotificationController@show']);
-                        $api->put('{notification}', ['as' => 'notifications.update', 'uses' => 'NotificationController@update']);
-                        $api->delete('{notification}', ['as' => 'notifications.delete', 'uses' => 'NotificationController@delete']);
+                        $api->get('/', ['as' => 'notifications.show', 'uses' => 'NotificationController@show']);
+                        $api->put('/', ['as' => 'notifications.update', 'uses' => 'NotificationController@update']);
+                        $api->delete('/', ['as' => 'notifications.delete', 'uses' => 'NotificationController@delete']);
                         $api->get('deliveries', ['as' => 'notifications.deliveries', 'uses' => 'NotificationController@deliveries']);
+                        $api->post('send', ['as' => 'notifications.send', 'uses' => 'NotificationController@send']);
                     });
+
                 });
+
                 $api->group(['prefix' => 'devices'], function($api) {
                     $api->get('/', ['as' => 'devices.index', 'uses' => 'DeviceController@index']);
-                    $api->post('/', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
+                    //$api->post('/', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
+                    // => This endpoint should not require authenticated access to the API
+
                     $api->group(['prefix' => '{device}'], function($api) {
-                        $api->get('{device}', ['as' => 'devices.show', 'uses' => 'DeviceController@show']);
-                        $api->put('{device}', ['as' => 'devices.update', 'uses' => 'DeviceController@update']);
-                        $api->delete('{device}', ['as' => 'devices.delete', 'uses' => 'DeviceController@delete']);
+                        $api->get('/', ['as' => 'devices.show', 'uses' => 'DeviceController@show']);
+                        $api->put('/', ['as' => 'devices.update', 'uses' => 'DeviceController@update']);
+                        $api->delete('/', ['as' => 'devices.delete', 'uses' => 'DeviceController@delete']);
                         $api->get('deliveries', ['as' => 'devices.deliveries', 'uses' => 'DeviceController@deliveries']);
                     });
+
                 });
+
             });
+
         });
+
     });
 
 

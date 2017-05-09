@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\Contracts\ApplicationRepositoryContract;
 use App\Application;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Log;
 
 class ApplicationRepository implements ApplicationRepositoryContract
 {
@@ -20,7 +21,7 @@ class ApplicationRepository implements ApplicationRepositoryContract
         return Application::paginate($perPage);
     }
 
-    public function create(Application $application, array $data = array())
+    public function create(array $data = array())
     {
         $data = array_filter($data, function($item) {
             return !is_null($item);
@@ -51,10 +52,14 @@ class ApplicationRepository implements ApplicationRepositoryContract
         });
 
         foreach ($data as $partFileName => $dataItem) {
+            Log::info("[{$partFileName}] will test if it is a file... ");
             if ($dataItem instanceof UploadedFile && $dataItem != null && $dataItem->isValid()) {
+                Log::info("[{$partFileName}] it is file! ");
                 $newFileName = "{$application->slug}_{$partFileName}";
                 $dataItem->move($this->getPath(), $newFileName);
                 $data[$partFileName] = $newFileName;
+            } else {
+                Log::info("[{$partFileName}] it is NOT a file! ");
             }
         }
 
@@ -76,10 +81,10 @@ class ApplicationRepository implements ApplicationRepositoryContract
 
     private function getPath($filename = null)
     {
-        return self::getPath($filename);
+        return self::getCertificatePath($filename);
     }
 
-    public static function getPath($filename = null) 
+    public static function getCertificatePath($filename = null) 
     {
         $filename = !is_null($filename) ? "/" . ltrim($filename, '/') : '';
 

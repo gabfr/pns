@@ -12,7 +12,7 @@ class Device extends Model
 
     protected $hidden = [];
 
-    protected $casts = [];
+    protected $casts = ['status' => 'boolean'];
 
     public function application()
     {

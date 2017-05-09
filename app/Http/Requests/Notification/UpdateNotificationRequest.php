@@ -27,7 +27,8 @@ class UpdateNotificationRequest extends ApiBaseRequest
         return [
             'title'     => 'sometimes',
             'alert_message'    => 'sometimes',
-            'icon' => 'sometimes'
+            'icon' => 'required',
+            'url' => 'required'
         ];
     }
 }

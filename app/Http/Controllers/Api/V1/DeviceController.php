@@ -7,14 +7,14 @@ use App\Device;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
-use App\Http\Requests\Application\CreateDeviceRequest;
-use App\Http\Requests\Application\DeleteDeviceRequest;
-use App\Http\Requests\Application\UpdateDeviceRequest;
+use App\Http\Requests\Device\CreateDeviceRequest;
+use App\Http\Requests\Device\DeleteDeviceRequest;
+use App\Http\Requests\Device\UpdateDeviceRequest;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Repositories\Contracts\DeviceRepositoryContract;
 
-class NotificationController extends ApiBaseController
+class DeviceController extends ApiBaseController
 {
 
     protected $deviceRepo;

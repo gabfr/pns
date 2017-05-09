@@ -161,7 +161,7 @@ return [
         App\Providers\RepositoryServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-        Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider::class,
+        Edujugon\PushNotification\Providers\PushNotificationServiceProvider::class,
 
     ],
 
@@ -211,7 +211,7 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'PushNotification' => Davibennun\LaravelPushNotification\Facades\PushNotification::class,
+        'PushNotification' => Edujugon\PushNotification\Facades\PushNotification::class,
     ],
 
 ];

@@ -74,7 +74,7 @@ class ApplicationController extends ApiBaseController
 
     public function updateGcm(Application $application, GcmUpdateApplicationRequest $request)
     {
-        $data = $request->only('gcm_api_key');
+        $data = $request->only('gcm_mode', 'gcm_api_key');
 
         $application = $this->appRepo->update($application, $data);
 
@@ -87,9 +87,10 @@ class ApplicationController extends ApiBaseController
             'apns_certificate_sandbox' => $request->file('apns_certificate_sandbox'),
             'apns_certificate_production' => $request->file('apns_certificate_production'),
             'apns_root_certificate' => $request->file('apns_root_certificate'),
-            'apns_certificate_password' => $request->only('apns_certificate_password')
+            'apns_certificate_password' => $request->get('apns_certificate_password', null),
+            'apns_mode' => $request->get('apns_mode', null)
         ];
-
+        \Log::info('Request data: ' . print_r($_FILES, true));
         foreach ($data as $partFileName => $dataItem) {
             if ($dataItem instanceof UploadedFile && $dataItem != null && !$dataItem->isValid()) {
                 return $this->response->errorBadRequest(

@@ -17,8 +17,6 @@ class ScheduleNotification extends Job implements ShouldQueue
 
     private $notification;
 
-    private static $chunkSize = 25;
-
     /**
      * Create a new job instance.
      *
@@ -26,6 +24,7 @@ class ScheduleNotification extends Job implements ShouldQueue
      */
     public function __construct(Notification $notification)
     {
+        Log::info('ScheduleNotification::__construct(Notification)');
         $this->notification = $notification;
     }
 
@@ -36,6 +35,9 @@ class ScheduleNotification extends Job implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('ScheduleNotification::handle()');
+        $chunkSize = 25;
+
         if ($this->notification == null) {
             Log::error('Não é possível agendar disparos de notificações. ', [$this->notification]);
             return;
@@ -43,29 +45,44 @@ class ScheduleNotification extends Job implements ShouldQueue
 
         $notification = $this->notification;
         $application = $this->notification->application()->first();
-        $devices = $application->devices();
-        $devices->where('platform', 'android')->chunk(self::$chunkSize, function($chunkOfDevices) use ($application, $notification) {
-            $notificationDeliveries = [];
-            foreach ($chunkOfDevices as $device) {
-                $notificationDeliveries[] = NotificationDelivery::create([
-                    'device_id' => $device->getKey(),
-                    'notification_id' => $notification->getKey(),
-                    'status' => NotificationDelivery::AGUARDANDO
-                ]);
-            }
-            dispatch(new DispatchNotifications("android", $notification, $notificationDeliveries));
-        });
 
-        $devices->where('platform', 'ios')->chunk(self::$chunkSize, function($chunkOfDevices) use ($application, $notification) {
-            $notificationDeliveries = [];
-            foreach ($chunkOfDevices as $device) {
-                $notificationDeliveries[] = NotificationDelivery::create([
-                    'device_id' => $device->getKey(),
-                    'notification_id' => $notification->getKey(),
-                    'status' => NotificationDelivery::AGUARDANDO
-                ]);
-            }
-            dispatch(new DispatchNotifications("ios", $notification, $notificationDeliveries));
-        });
+        Device::where('application_id', $application->getKey())
+            ->where('platform', 'android')
+            ->where('status', true)
+            ->chunk($chunkSize, function($chunkOfDevices) use ($application, $notification) {
+                Log::info('Will schedule for Android... ');
+                $notificationDeliveries = [];
+                foreach ($chunkOfDevices as $device) {
+                    Log::info("Android - {$device->device_token}... ");
+                    $notificationDeliveries[] = NotificationDelivery::create([
+                        'device_id' => $device->getKey(),
+                        'notification_id' => $notification->getKey(),
+                        'status' => NotificationDelivery::AGUARDANDO
+                    ]);
+                }
+                dispatch(new DispatchNotifications("android", $this->notification, $notificationDeliveries));
+            });
+
+        Device::where('application_id', $application->getKey())
+            ->where('platform', 'ios')
+            ->where('status', true)
+            ->chunk($chunkSize, function($chunkOfDevices) use ($application, $notification) {
+                Log::info('Will schedule for iOS... ');
+                $notificationDeliveries = [];
+                foreach ($chunkOfDevices as $device) {
+                    Log::info("iOS - {$device->device_token}... ");
+                    $notificationDeliveries[] = NotificationDelivery::create([
+                        'device_id' => $device->getKey(),
+                        'notification_id' => $notification->getKey(),
+                        'status' => NotificationDelivery::AGUARDANDO
+                    ]);
+                }
+                dispatch(new DispatchNotifications("ios", $this->notification, $notificationDeliveries));
+            });
+    }
+
+    public function failed(Exception $e)
+    {
+        Log::info('ScheduleNotification failed: ' . print_r($e, true));
     }
 }
