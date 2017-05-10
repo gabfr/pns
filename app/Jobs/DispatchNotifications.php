@@ -53,7 +53,7 @@ class DispatchNotifications extends Job implements ShouldQueue
         $pns = null;
         $message = null;
         if ($this->platform == 'android') {
-            $pns = PushNotification::setService('fcm')->setConfig([
+            $pns = PushNotification::setService('gcm')->setConfig([
                 'priority' => 'normal',
                 'dry_run' => ($this->application->gcm_mode == "sandbox" ? true : false),
                 'apiKey' => $this->application->gcm_api_key
