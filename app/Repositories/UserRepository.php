@@ -60,6 +60,11 @@ class UserRepository implements UserRepositoryContract
         return $this->findById($user);
     }
 
+    public function delete(User $user)
+    {
+        return $user->delete();
+    }
+
     /**
      * get user by id
      *

@@ -23,4 +23,9 @@ class Device extends Model
     {
         return $this->hasMany('App\NotificationDelivery');
     }
+
+    public function scopeOnlyActive()
+    {
+        return $this->where('status', true);
+    }
 }

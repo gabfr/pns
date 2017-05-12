@@ -14,6 +14,11 @@ class Application extends Model
 
     protected $casts = [];
 
+    protected $appends = [
+        'devices_count',
+        'notifications_count'
+    ];
+
     public function devices()
     {
         return $this->hasMany('App\Device');
@@ -22,5 +27,15 @@ class Application extends Model
     public function notifications()
     {
         return $this->hasMany('App\Notification');
+    }
+
+    public function getDevicesCountAttribute()
+    {
+        return $this->devices()->onlyActive()->count();
+    }
+
+    public function getNotificationsCountAttribute()
+    {
+        return $this->notifications()->count();
     }
 }

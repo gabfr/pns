@@ -41,6 +41,11 @@ class NotificationRepository implements NotificationRepositoryContract
         return $this->findById($notification);
     }
 
+    public function delete(Notification $notification)
+    {
+        $notification->delete();
+    }
+
     public function findById($notificationId)
     {
         if ($notificationId instanceof Notification) {

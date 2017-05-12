@@ -18,9 +18,6 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
     $api->get('social-auth/{driver}/callback',['as'=>'auth.social.callback','uses'=>'SocialAuthentication@callback','middleware'=>'web']);
 
     // User Routes
-    $api->group(['prefix'=>'users','middleware' => 'cors'],function($api){
-        $api->post('/',['as'=>'users.store','uses'=>'UserController@store']);
-    });
 
     $api->get('cities', ['as' => 'cities.all', 'uses' => 'CitiesController@all']);
     $api->post('cities/zipcodes', ['as' => 'cities.zipcodes', 'uses' => 'CitiesController@zipcode']);
@@ -29,6 +26,13 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
 
     $api->group(['middleware'=>'api.auth'],function($api){
         $api->get('/me',['as'=>'users.me','uses'=>'UserController@me']);
+        $api->group(['prefix' => 'users', 'middleware' => 'staff'], function($api) {
+            $api->get('/', ['as' => 'users.index', 'uses' => 'UserController@index']);
+            $api->post('/', ['as' => 'users.store', 'uses' => 'UserController@store']);
+            $api->get('{user}', ['as' => 'users.show', 'uses' => 'UserController@show']);
+            $api->delete('{user}', ['as' => 'users.delete', 'uses' => 'UserController@delete']);
+            $api->put('{user}', ['as' => 'users.update', 'uses' => 'UserController@update']);
+        });
 
         $api->group(['prefix'=>'applications'], function($api) {
             $api->get('/', ['as' => 'applications.index', 'uses' => 'ApplicationController@index']);

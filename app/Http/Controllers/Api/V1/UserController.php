@@ -6,6 +6,7 @@ use App\User;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Requests\Users\CreateUserRequest;
+use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Repositories\Contracts\UserRepositoryContract;
 
@@ -55,13 +56,31 @@ class UserController extends ApiBaseController
     public function store(CreateUserRequest $request)
     {
 
-        $data = $request->only('name','email','password' );
+        $data = $request->only('name','email','password', 'is_super' );
 
         $user = $this->userRepo->store($data);
 
         return $this->response->item(
             $user,$this->getBasicTransformer()
         );
+    }
+
+    public function update(User $user, UpdateUserRequest $request)
+    {
+        $data = $request->only('name', 'email', 'password', 'is_super');
+
+        $user = $this->userRepo->update($user, $data);
+
+        return $this->response->item(
+            $user, $this->getBasicTransformer()
+        );
+    }
+
+    public function delete(User $user, Request $request)
+    {
+        $this->userRepo->delete($user);
+
+        return $this->response->noContent();
     }
 
     /**
