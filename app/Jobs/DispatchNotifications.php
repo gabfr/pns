@@ -62,10 +62,12 @@ class DispatchNotifications extends Job implements ShouldQueue
                 'notification' => [
                     'title' => $this->notification->title,
                     'body' => $this->notification->alert_message,
-                    'sound' => 'default'
+                    'sound' => 'default',
+                    "content-available" => 1
                 ],
                 'data' => [
-                    'url' => $this->notification->url
+                    'url' => $this->notification->url,
+                    "content-available" => 1
                 ]
             ];
         } else {
