@@ -29,6 +29,7 @@ class RouteServiceProvider extends ServiceProvider
         parent::boot($router);
 
         $router->model('user','App\User');
+        $router->model('fakePage', 'App\FakePage');
 
         $router->bind('application', function($idOrSlug, $route) {
             return \App\Application::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->first();

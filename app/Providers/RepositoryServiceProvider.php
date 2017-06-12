@@ -12,7 +12,8 @@ class RepositoryServiceProvider extends ServiceProvider
         'CityRepositoryContract' => 'CityRepository',
         'ApplicationRepositoryContract' => 'ApplicationRepository',
         'DeviceRepositoryContract' => 'DeviceRepository',
-        'NotificationRepositoryContract' => 'NotificationRepository'
+        'NotificationRepositoryContract' => 'NotificationRepository',
+        'FakePagesRepositoryContract' => 'FakePagesRepository'
     ];
 
     /**

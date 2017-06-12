@@ -24,6 +24,16 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
 
     $api->post('applications/{application}/devices', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
 
+    $api->group(['prefix' => 'fake-pages'], function($api) {
+        $api->get('/', ['as' => 'fakePages.index', 'uses' => 'FakePagesController@index']);
+        $api->group(['middleware' => 'api.auth'], function($api) {
+            $api->post('/', ['as' => 'fakePages.store', 'uses' => 'FakePagesController@store']);
+            $api->get('{fakePage}', ['as' => 'fakePages.show', 'uses' => 'FakePagesController@show']);
+            $api->put('{fakePage}', ['as' => 'fakePages.update', 'uses' => 'FakePagesController@update']);
+            $api->delete('{fakePage}', ['as' => 'fakePages.delete', 'uses' => 'FakePagesController@delete']);
+        });
+    });
+
     $api->group(['middleware'=>'api.auth'],function($api){
         $api->get('/me',['as'=>'users.me','uses'=>'UserController@me']);
         $api->group(['prefix' => 'users', 'middleware' => 'staff'], function($api) {
