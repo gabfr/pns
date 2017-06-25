@@ -3,6 +3,7 @@
 /public/storage/cache/feed*
 /public/storage
 /storage/certificates
+/storage/cloud_objects
 Homestead.yaml
 Homestead.json
 .env

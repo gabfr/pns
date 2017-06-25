@@ -13,7 +13,8 @@ class RepositoryServiceProvider extends ServiceProvider
         'ApplicationRepositoryContract' => 'ApplicationRepository',
         'DeviceRepositoryContract' => 'DeviceRepository',
         'NotificationRepositoryContract' => 'NotificationRepository',
-        'FakePagesRepositoryContract' => 'FakePagesRepository'
+        'FakePagesRepositoryContract' => 'FakePagesRepository',
+        'CloudObjectRepositoryContract' => 'CloudObjectRepository'
     ];
 
     /**

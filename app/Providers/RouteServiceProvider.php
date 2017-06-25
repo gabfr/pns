@@ -50,6 +50,10 @@ class RouteServiceProvider extends ServiceProvider
             }
             return null;
         });
+
+        $router->bind('cloudObject', function($idOrSlug, $route) {
+            return \App\CloudObject::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->first();
+        });
     }
 
     /**

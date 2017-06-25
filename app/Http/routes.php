@@ -34,6 +34,17 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
         });
     });
 
+    $api->group(['prefix' => 'cloud-objects'], function($api) {
+        $api->get('/', ['as' => 'cloudObjects.index', 'uses' => 'CloudObjectsController@index']);
+        $api->get('{cloudObject}', ['as' => 'cloudObjects.show', 'uses' => 'CloudObjectsController@show']);
+        $api->get('{cloudObject}/download/{filename}', ['as' => 'cloudObjects.download', 'uses' => 'CloudObjectsController@download']);
+        $api->group(['middleware' => 'api.auth'], function($api) {
+            $api->post('/', ['as' => 'cloudObjects.store', 'uses' => 'CloudObjectsController@store']);
+            $api->put('{cloudObject}', ['as' => 'cloudObjects.update', 'uses' => 'CloudObjectsController@update']);
+            $api->delete('{cloudObject}', ['as' => 'cloudObjects.delete', 'uses' => 'CloudObjectsController@delete']);
+        });
+    });
+
     $api->group(['middleware'=>'api.auth'],function($api){
         $api->get('/me',['as'=>'users.me','uses'=>'UserController@me']);
         $api->group(['prefix' => 'users', 'middleware' => 'staff'], function($api) {
