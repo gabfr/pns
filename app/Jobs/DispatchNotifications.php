@@ -121,7 +121,7 @@ class DispatchNotifications extends Job implements ShouldQueue
         foreach ($allDeliveries as $delivery)
             $delivery->update(['status' => NotificationDelivery::ENVIADO]);
 
-        if ($responses->failure > 0) {
+        if ($responses->failure > 0 && property_exists($responses, "tokenFailList")) {
             foreach ($responses->tokenFailList as $deviceToken) {
                 $device = Device::where('application_id', $this->notification->application_id)
                     ->where('device_token', $deviceToken)
