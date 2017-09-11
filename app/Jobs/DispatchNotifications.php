@@ -59,16 +59,21 @@ class DispatchNotifications extends Job implements ShouldQueue
                 'apiKey' => $this->application->gcm_api_key
             ]);
             $message = [
+                'data' => [
+                    'title' => $this->notification->title,
+                    'alert_id' => $this->notification->getKey(),
+                    'message_text' => $this->notification->message_text,
+                    'url' => $this->notification->url,
+                    'soundname' => 'default'
+                ]/*,
                 'notification' => [
                     'title' => $this->notification->title,
                     'body' => $this->notification->alert_message,
                     'sound' => 'default',
-                    "content-available" => 1
+                    "content-available" => "1",
+                    'url' => $this->notification->url
                 ],
-                'data' => [
-                    'url' => $this->notification->url,
-                    "content-available" => 1
-                ]
+                'content_available' => true*/
             ];
         } else {
             $configPayload = [
