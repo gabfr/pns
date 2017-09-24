@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Device;
+
 class Application extends Model
 {
     public $timestamps = true;
@@ -31,7 +33,7 @@ class Application extends Model
 
     public function getDevicesCountAttribute()
     {
-        return $this->devices()->onlyActive()->count();
+        return Device::onlyActive()->where('application_id', $this->getKey())->count();
     }
 
     public function getNotificationsCountAttribute()
