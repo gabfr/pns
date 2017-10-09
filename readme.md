@@ -109,6 +109,10 @@ cat aps_production.pem Certificates_production_NOPWD.pem > apns_production.pem
 
 In this case, the file that you will use on the endpoint above is the **apns_production.pem**.
 
+## Ready? Nice!
+
+After you are ready, you can start sendind notifications with our [simple app, that was made with love and needs attention](https://github.com/gabfr/pns-app).
+
 ## License
 
 This software is made on top of the Laravel framework that is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
