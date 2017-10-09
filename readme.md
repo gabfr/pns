@@ -67,7 +67,7 @@ Field | Description | Type | Mandatory | Default value
 
 `POST /applications/*your-app-slug*/apns`
 
-*Important:* When sending the files, you should select the `form-data` option on the body tab of the postman. Which will result in a content-type header like this one:
+**Important:** When sending the files, you should select the **`form-data`** option on the body tab of the postman. Which will result in a content-type header like this one:
 `Content-Type: multipart/form-data; boundary=...`
 
 Field | Description | Type | Mandatory | Default value
@@ -90,13 +90,14 @@ First of all, make sure you have the `*.cer` file, before you start, follow thes
 I recommend that you use the same name for your certificates, i.e., if you generate the `*.p12` file of your `push_certificate_sandbox.cer`, you should name your `*.p12` file as: `push_certificate_sandbox.p12`. That way, we will not get lost in the middle of the many files we will generate.
 
 Now you just have to run the bash script below to generate the correct `*.pem` file to the API.
+
 **Important:** Remember to check the files in bold below and change it to the correct name that you want.
 
-```
+```shell
 #!/bin/sh
 
-cd com.paranaibafm1007
-openssl x509 -in *aps_production.cer* -inform der -out aps_production.pem
+cd **folder/of/your/certificates**
+openssl x509 -in **aps_production.cer** -inform der -out aps_production.pem
 
 openssl pkcs12 -nocerts -out Certificates_production.pem -in **Certificates_production.p12**
 openssl rsa -in Certificates_production.pem -out Certificates_production_NOPWD.pem
