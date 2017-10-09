@@ -1,27 +1,81 @@
-# Laravel PHP Framework
+# Push Notification Service
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Simple and functional API service to store device tokens of your app and dispatch notifications to them.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+## Installing
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+* You can clone this repo, or [download it here](https://github.com/gabfr/pns/archive/master.zip) (development version - master branch).
+* After getting the files, you should configure your `.env` file following the example in `.env.example`
+* Finally you run `composer install`
+* And then create the database with the tables running `php artisan migrate`
+* With the database created, you should run `php artisan db:seed`, so you will get the default records.
 
-## Official Documentation
+## Managing the applications
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+There is no UI to manage the applications yet, so you have to do it yourself through the database or you can use something like a Postman (which I think it's easier - but this is totally up to you).
 
-## Contributing
+### Managing the application - via Postman
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+#### Authenticating
 
-## Security Vulnerabilities
+First of all, you should get a access token so you can POST/GET/DELETE/PUT critical resources such as applications registries.
+You do it in the route `/access-token` as the following request:
+```
+POST /access-token HTTP/1.1
+Content-Type: application/json
+Cache-Control: no-cache
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+{
+	"email": "eu@gabrielf.com",
+	"password": "secret"
+}
+```
+
+When you got the token successfully, you have to add in the headers of all your further requests:
+```
+Content-Type: application/json
+Authorization: Bearer PASTE_HERE_THE_TOKEN_YOU_GOT
+```
+
+#### Configuring applications
+
+With the token, it is simple to create an application on the system, you just send a `POST` to `/applications`:
+```
+Content-Type: application/json
+Authorization: Bearer PASTE_HERE_THE_TOKEN_YOU_GOT
+
+{
+	"name": "My Fancy App Name",
+	"slug": "my-fancy-app-name"
+}
+```
+
+#### Configuring applications - notification service certificates (Android and Apple)
+
+With your apps created you should now configure the credentials/certificates of the notifications APIs:
+
+##### Android - Google Cloud Messaging/Firebase
+
+`POST /applications/*your-app-slug*/gcm`
+
+Field | Description | Type | Mandatory | Default value
+----- | ----------- | ---- | --------- | -------------
+`gcm_api_key` | The private key to send notifications on the Google Cloud Messaging. You can get it on the [Firebase Control Panel](https://console.firebase.google.com) (Select Project > Go to Settings > Click on the Cloud Messaging Tab) | `string` | [X] | `null`
+`gcm_mode` | The mode you want to operate on the GCM network. `sandbox` or `production` | `string` | [X] | `sandbox`
+
+##### Apple Push Notification Service
+
+`POST /applications/*your-app-slug*/apns`
+
+*Important:* When sending the files, you should select the `form-data` option on the body tab of the postman. Which will result in a content-type header like this one:
+`Content-Type: multipart/form-data; boundary=...`
+
+Field | Description | Type | Mandatory | Default value
+----- | ----------- | ---- | --------- | -------------
+`apns_certificate_sandbox` | The private key to send notifications on the Apple Push Notification Service, the sandbox one. The format of the certificate file is specified in the next section. | `file` | [ ] | `null`
+`apns_certificate_production` | The production key to send notifications on the Apple Push Notification Service, the production one. | `file` | [X] | `null`
+`apns_mode` | The mode you want to operate on the APNS network. `sandbox` or `production` | `string` | [X] | `sandbox`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+This software is made on top of the Laravel framework that is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
