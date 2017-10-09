@@ -111,7 +111,7 @@ In this case, the file that you will use on the endpoint above is the **apns_pro
 
 ## Ready? Nice!
 
-After you are ready, you can start sendind notifications with our [simple app, that was made with love and needs attention](https://github.com/gabfr/pns-app).
+After you are ready, you can start sendind notifications with our [simple web app, that was made with love and needs attention](https://github.com/gabfr/pns-app).
 
 ## License
 
