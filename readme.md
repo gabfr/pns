@@ -2,6 +2,8 @@
 
 Simple and functional API service to store device tokens of your app and dispatch notifications to them.
 
+If you want to get it running, follow the instructions here. It will take half an hour, at least it is free.
+
 ## Installing
 
 * You can clone this repo, or [download it here](https://github.com/gabfr/pns/archive/master.zip) (development version - master branch).
