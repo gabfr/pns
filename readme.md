@@ -54,7 +54,7 @@ Authorization: Bearer PASTE_HERE_THE_TOKEN_YOU_GOT
 
 With your apps created you should now configure the credentials/certificates of the notifications APIs:
 
-#### Android - Google Cloud Messaging/Firebase
+### Android - Google Cloud Messaging/Firebase
 
 `POST /applications/*your-app-slug*/gcm`
 
@@ -63,7 +63,7 @@ Field | Description | Type | Mandatory | Default value
 `gcm_api_key` | The private key to send notifications on the Google Cloud Messaging. You can get it on the [Firebase Control Panel](https://console.firebase.google.com) (Select Project > Go to Settings > Click on the Cloud Messaging Tab) | `string` | [X] | `null`
 `gcm_mode` | The mode you want to operate on the GCM network. `sandbox` or `production` | `string` | [X] | `sandbox`
 
-#### Apple Push Notification Service
+### Apple Push Notification Service
 
 `POST /applications/*your-app-slug*/apns`
 
@@ -72,25 +72,25 @@ Field | Description | Type | Mandatory | Default value
 
 Field | Description | Type | Mandatory | Default value
 ----- | ----------- | ---- | --------- | -------------
-`apns_certificate_sandbox` | The private key to send notifications on the Apple Push Notification Service, the sandbox one. The format of the certificate file is specified in the next section. | `file` | [ ] | `null`
+`apns_certificate_sandbox` | The private key to send notifications on the Apple Push Notification Service, the sandbox one. The format of the certificate file is **`*.pem`**, check out how to generate it in the next section. | `file` | [ ] | `null`
 `apns_certificate_production` | The production key to send notifications on the Apple Push Notification Service, the production one. | `file` | [X] | `null`
 `apns_mode` | The mode you want to operate on the APNS network. `sandbox` or `production` | `string` | [X] | `sandbox`
 
-#### Apple Push Notification Service - Preparing the certificate files
+### Apple Push Notification Service - Preparing the certificate files
 
 This guide will help you to convert the certificates you already generated on the Apple Developer Center to the format that the API will work with.
 
 First of all, make sure you have the `*.cer` file, before you start, follow these steps below:
-* You have to go to the *Keychain Access* tool, selected the category *My Certificates*
+* You have to go to the **Keychain Access** tool, selected the category **My Certificates**
 * Drag and drop the `*.cer` file on the certificate list
 * Localize your certificate that should be called something like `Apple Development IOS Push Services: com.mycoolapp.code` or `Apple Push Services: com.mycoolapp.code`
-* Toggle the marker right before the name, and you will see a private key registry, click with the right button of your magic mouse or trackpad (whatever), and *Export* it.
+* Toggle the marker right before the name, and you will see a private key registry, click with the right button of your magic mouse or trackpad (whatever), and **Export** it.
 * Save it on the same folder of your `*.cer` file. Make sure it is on the format `*.p12` (Personal Information Exchange)
 
 I recommend that you use the same name for your certificates, i.e., if you generate the `*.p12` file of your `push_certificate_sandbox.cer`, you should name your `*.p12` file as: `push_certificate_sandbox.p12`. That way, we will not get lost in the middle of the many files we will generate.
 
 Now you just have to run the bash script below to generate the correct `*.pem` file to the API.
-*Important:* Remember to check the files in bold below and change it to the correct name that you want.
+**Important:** Remember to check the files in bold below and change it to the correct name that you want.
 
 ```
 #!/bin/sh
@@ -98,11 +98,13 @@ Now you just have to run the bash script below to generate the correct `*.pem` f
 cd com.paranaibafm1007
 openssl x509 -in *aps_production.cer* -inform der -out aps_production.pem
 
-openssl pkcs12 -nocerts -out Certificates_production.pem -in *Certificates_production.p12*
+openssl pkcs12 -nocerts -out Certificates_production.pem -in **Certificates_production.p12**
 openssl rsa -in Certificates_production.pem -out Certificates_production_NOPWD.pem
 
 cat aps_production.pem Certificates_production_NOPWD.pem > apns_production.pem
 ```
+
+In this case, the file that you will use on the endpoint above is the **apns_production.pem**.
 
 ## License
 
