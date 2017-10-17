@@ -6,10 +6,6 @@
     "type": "project",
     "repositories":[
         {
-            "url":"https://github.com/eduardostuart/feedreader.git",
-            "type":"git"
-        },
-        {
             "url":"https://github.com/eduardostuart/api.git",
             "type":"git",
             "reference":"f7e09cb070d0889a8ad9e08aaa02ff474a0ecb96"
