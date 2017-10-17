@@ -31,6 +31,11 @@ class Application extends Model
         return $this->hasMany('App\Notification');
     }
 
+    public function fake_pages()
+    {
+        return $this->hasMany('App\FakePage');
+    }
+
     public function getDevicesCountAttribute()
     {
         return Device::onlyActive()->where('application_id', $this->getKey())->count();

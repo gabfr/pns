@@ -4,17 +4,32 @@ namespace App\Repositories;
 
 use App\Repositories\Contracts\FakePagesRepositoryContract;
 use App\FakePage;
+use App\User;
+use App\Application;
 
 class FakePagesRepository implements FakePagesRepositoryContract
 {
-    public function all($user, $perPage = 20)
+    public function all($user, Application $application = null, $perPage = 20)
     {
         $fakePages = null;
+
         if (!$user) {
             $fakePages = FakePage::onlyActive()->orderBy('name');
+
+            if (!is_null($application)) 
+                $fakePages->where('application_id', $application->getKey());
+            else {
+                $application = Application::where('id', env('PNS_DEFAULT_APP', -1))
+                    ->orWhere('slug', env('PNS_DEFAULT_APP', -1))->first();
+                    
+                $fakePages->whereNull('application_id');
+                if ($application) 
+                    $fakePages->orWhere('application_id', $application->getKey());
+            }
         } else {
-            $fakePages = FakePage::orderBy('name');
+            $fakePages = FakePage::orderBy('name')->with(['application']);
         }
+
         return $fakePages->paginate($perPage);
     }
 
