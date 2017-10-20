@@ -16,4 +16,9 @@ class FakePage extends Model
     {
     	return $this->where('is_active', true);
     }
+
+    public function application()
+    {
+    	return $this->belongsTo('App\Application');
+    }
 }

@@ -27,7 +27,8 @@ class CreateFakePageRequest extends ApiBaseRequest
         return [
             'name'     => 'required',
             'content_url'    => 'required',
-            'is_active' => 'required|boolean'
+            'is_active' => 'required|boolean',
+            'application_id' => 'required|exists:applications,id'
         ];
     }
 }

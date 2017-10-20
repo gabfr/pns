@@ -11,6 +11,7 @@ use App\Repositories\Contracts\FakePagesRepositoryContract;
 
 use App\FakePage;
 use App\User;
+use App\Application;
 
 use App\Http\Controllers\Api\ApiBaseController;
 
@@ -23,16 +24,19 @@ class FakePagesController extends ApiBaseController
     	$this->fakePagesRepo = $fakePagesRepo;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, Application $application = null)
     {
     	if ( ($perPage = $request->get('per_page', 20)) > 100 ) {
     		$perPage = 100;
     	}
 
+        if (!$application->exists)
+            $application = null;
+
     	$user = app('Dingo\Api\Auth\Auth')->user();
 
     	return $this->response->paginator(
-    		$this->fakePagesRepo->all($user, $perPage), 
+    		$this->fakePagesRepo->all($user, $application, $perPage), 
     		$this->getBasicTransformer()
 		);
     }
@@ -44,7 +48,7 @@ class FakePagesController extends ApiBaseController
 
     public function store(CreateFakePageRequest $request)
     {
-    	$data = $request->only('name', 'content_url', 'is_active');
+    	$data = $request->only('name', 'content_url', 'application_id', 'is_active');
     	$fakePage = $this->fakePagesRepo->store($data);
 
     	return $this->response->item($fakePage, $this->getBasicTransformer());
@@ -52,7 +56,7 @@ class FakePagesController extends ApiBaseController
 
     public function update(FakePage $fakePage, UpdateFakePageRequest $request)
     {
-    	$data = $request->only('name', 'content_url', 'is_active');
+    	$data = $request->only('name', 'content_url', 'application_id', 'is_active');
 
     	$fakePage = $this->fakePagesRepo->update($fakePage, $data);
 

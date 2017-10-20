@@ -22,7 +22,11 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api\V1','middleware' => '
     $api->get('cities', ['as' => 'cities.all', 'uses' => 'CitiesController@all']);
     $api->post('cities/zipcodes', ['as' => 'cities.zipcodes', 'uses' => 'CitiesController@zipcode']);
 
-    $api->post('applications/{application}/devices', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
+    $api->group(['prefix' => 'applications/{application}'], function($api) {
+        $api->post('devices', ['as' => 'devices.create', 'uses' => 'DeviceController@create']);
+        $api->get('fake-pages', ['as' => 'fakePages.indexPublic', 'uses' => 'FakePagesController@index']);
+    });
+    
 
     $api->group(['prefix' => 'fake-pages'], function($api) {
         $api->get('/', ['as' => 'fakePages.index', 'uses' => 'FakePagesController@index']);
